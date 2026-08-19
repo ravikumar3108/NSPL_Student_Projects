@@ -1,4 +1,6 @@
 const User = require("../model/userModel");
+const jwt = require("jsonwebtoken")
+
 
 //USERSIGNuP
 
@@ -20,14 +22,24 @@ const userSignup = async (req, res) => {
       phone,
       password,
     });
+
+    const token = jwt.sign({
+      userId : user._id
+    },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn : "7D"
+    }
+  )  
+
     res.status(201).json({
       success: true,
       message: "Signup successfull",
+      token,
       user: {
         name: user.name,
         email: user.email,
         phone: user.phone,
-        password: user.password,
       },
     });
   } catch (error) {
@@ -58,9 +70,20 @@ const userLogin = async (req, res) => {
         message: "incorrect password",
       });
     }
+
+     const token = jwt.sign({
+      userId : user._id
+    },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn : "7D"
+    }
+  )  
+
     res.status(200).json({
       success: true,
       message: "Login successfull",
+      token,
       user: {
         email: user.email,
         password: user.password,

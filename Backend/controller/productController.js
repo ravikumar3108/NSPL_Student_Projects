@@ -133,7 +133,6 @@ const getSingleProduct = async (req, res) => {
 const FeaturedProducts = async (req, res) => {
   try {
     const featuredData = await product.find({section:"featured"});
-    console.log(featuredData);
 
     return res.status(200).json({
         success: true,
