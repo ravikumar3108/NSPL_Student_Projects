@@ -1,5 +1,4 @@
-const jwt = require('jsonwebtoken')
-
+const jwt = require("jsonwebtoken");
 
 const protectRoute = async (req, res, next) => {
   let token;
@@ -31,4 +30,4 @@ const protectRoute = async (req, res, next) => {
   }
 };
 
-module.exports = protectRoute
+module.exports = protectRoute;

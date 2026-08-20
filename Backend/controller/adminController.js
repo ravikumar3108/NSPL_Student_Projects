@@ -1,4 +1,5 @@
 const Admin = require("../model/adminModel")
+const jwt = require("jsonwebtoken")
 
 const adminLogin = async (req, res) => {
   try {
@@ -18,9 +19,19 @@ const adminLogin = async (req, res) => {
       });
     }
 
+    let token = await jwt.sign({
+      userId : admin._id
+    },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn:"7D"
+    }
+  )
+
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token,
       admin: {
         _id: admin._id,
         name: admin.name,
@@ -43,7 +54,7 @@ const adminLogin = async (req, res) => {
 const registerAdmin = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-    const image = req.file.filename || "";
+    // const image = req.file.filename || "";
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
@@ -65,7 +76,7 @@ const registerAdmin = async (req, res) => {
       email,
       password,
       role,
-      image,
+      // image,
     });
 
     res.status(201).json({
@@ -76,7 +87,7 @@ const registerAdmin = async (req, res) => {
         name: name,
         email: admin.email,
         role: admin.role,
-        image: admin.image
+        // image: admin.image
       },
     });
   } catch (error) {
