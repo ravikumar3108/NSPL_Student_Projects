@@ -143,4 +143,16 @@ const getAllUser = async (req, res) => {
   }
 };
 
-module.exports = { userSignup, userLogin, getSingleUser, getAllUser };
+
+const profile = async(req,res)=>{
+  try{
+    const profile = await User.findById(req.user.id)
+    console.log(profile)
+
+  }catch(err){
+    res.json({error:err})
+  }
+}
+
+
+module.exports = { userSignup, userLogin, getSingleUser, getAllUser ,profile };

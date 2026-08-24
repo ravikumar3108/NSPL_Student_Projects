@@ -1,11 +1,14 @@
 const jwt = require("jsonwebtoken");
+const dotenv = require('dotenv').config()
+const User = require("../model/userModel")
 
 const protectRoute = async (req, res, next) => {
   let token;
   let authHeader = req.headers.Authorization || req.headers.authorization;
   if (authHeader && authHeader.startsWith("Bearer")) {
     token = authHeader.split(" ")[1];
-    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+    // Encoded
+    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
       if (decoded) {
         let result = await User.findOne({ _id: decoded.userId });
         req.user = result;
@@ -25,7 +28,7 @@ const protectRoute = async (req, res, next) => {
   } else {
     res.status({
       status: false,
-      msg: "something wrong",
+      msg: "something wrong in token",
     });
   }
 };
