@@ -8,6 +8,7 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
+import api from "../api/Api";
 
 function SellingProducts() {
   const [products, setProducts] = useState([]);
@@ -20,12 +21,8 @@ function SellingProducts() {
   // ================= GET PRODUCTS =================
   const getProducts = async () => {
     try {
-      const response = await axios.get( 
-        "http://localhost:5000/api/Products/getAllProducts"
-      );
-
+      const response = await api.get("/products/getAllProducts")
       console.log("Products from backend:", response.data);
-
       setProducts(response.data.data || []);
     } catch (error) {
       console.log("Error fetching products:", error);

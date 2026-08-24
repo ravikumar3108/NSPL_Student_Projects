@@ -4,16 +4,15 @@ import { Mail, Lock, Eye } from "lucide-react";
 import logo from "../Images/logo.png";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/Api";
 
 function Login() {
-
-
     const [data, setAllData] = useState({
         email: "",
         password: ""
     });
+    const navigate = useNavigate()
 
     const getvalue = (e) => {
         setAllData({
@@ -26,13 +25,16 @@ function Login() {
         e.preventDefault();
 
         try {
-            const res = await api.post("/user/login",data)
+            const res = await api.post("/user/login", data)
             // const res = await axios.post("https://organic-backend-five.vercel.app/api/user/login", data)
             if (res.data.success) {
                 localStorage.setItem(
-                    "user", JSON.stringify(res.data.user)
+                    "organictoken", JSON.stringify(res.data.token)
                 );
                 toast.success(res.data.message);
+                setTimeout(() => {
+                    navigate("/")
+                }, 2000);
             }
             else {
                 toast.error(res.data.message)

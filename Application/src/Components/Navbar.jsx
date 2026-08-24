@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Menu,
   X,
@@ -11,16 +11,32 @@ import {
 } from "lucide-react";
 
 import logo from "../Images/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [pagesOpen, setPagesOpen] = useState(false);
-
+  const [user, setUser] = useState(false)
   const closeMenus = () => {
     setMobileOpen(false);
     setPagesOpen(false);
   };
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const getuserToken = localStorage.getItem("organictoken")
+    if (getuserToken) {
+      setUser(true)
+    }
+  }, [])
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("organictoken")
+    navigate("/login")
+  }
+
 
   return (
     <header className="relative z-50 bg-white">
@@ -210,26 +226,29 @@ function Navbar() {
               </div>
             )}
           </div>
+          {
+            user ? <>   <Link
+              to="/my-account"
+              aria-label="Account"
+              className="text-gray-700 hover:text-green-600"
+            >
+              <User size={20} strokeWidth={1.6} />
+            </Link></> :
+              <Link
+                to="/Login"
+                className="rounded-md px-2 py-2 text-sm text-gray-600  border px-8 bg-green-700 text-white"
+              >
+                Login
+              </Link>
+          }
 
-          <Link
-            to="/Login"
-            className="rounded-md px-2 py-2 text-sm text-gray-600  border px-8 bg-green-700 text-white"
-          >
-            Login
-          </Link>
         </nav>
 
         {/* Right Icons */}
         <div className="flex shrink-0 items-center gap-4 pl-4 lg:border-l lg:border-gray-200">
 
           {/* Account */}
-          <Link
-            to="/my-account"
-            aria-label="Account"
-            className="text-gray-700 hover:text-green-600"
-          >
-            <User size={20} strokeWidth={1.6} />
-          </Link>
+
 
           {/* Wishlist */}
           <button
