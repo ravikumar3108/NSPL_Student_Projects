@@ -17,7 +17,7 @@ router.post(
   createProduct,
 );
 
-router.get("/getAllProducts", protectRoute, getAllProducts);
+router.get("/getAllProducts",  getAllProducts);
 // GET SINLGE PRODUCT
 
 // router.delete("/deleteProduct/:id", deleteProduct)
