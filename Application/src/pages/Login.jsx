@@ -29,7 +29,7 @@ function Login() {
             // const res = await axios.post("https://organic-backend-five.vercel.app/api/user/login", data)
             if (res.data.success) {
                 localStorage.setItem(
-                    "organictoken", JSON.stringify(res.data.token)
+                    "organictoken", res.data.token
                 );
                 toast.success(res.data.message);
                 setTimeout(() => {

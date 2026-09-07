@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 
 const PopularProducts = () => {
   const [products, setProducts] = useState([]);
-  console.log(products)
   const [loading, setLoading] = useState(true);
   const [quantities, setQuantities] = useState({});
 
@@ -30,12 +29,8 @@ const PopularProducts = () => {
         "http://localhost:5173/api/Products/getAllProducts"
       );
 
-      console.log("Popular Products:", response.data);
-
       setProducts(response.data.data || []);
     } catch (error) {
-      console.log("Error fetching popular products:", error);
-
       if (error.response) {
         console.log("Status:", error.response.status);
         console.log("Response:", error.response.data);

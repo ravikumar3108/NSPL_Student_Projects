@@ -34,6 +34,17 @@ const Cart = () => {
     },
   ]);
 
+  
+
+
+
+
+
+
+
+
+
+
   const increaseQuantity = (id) => {
     setCartItems((items) =>
       items.map((item) =>

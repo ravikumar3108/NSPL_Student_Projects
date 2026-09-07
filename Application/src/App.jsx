@@ -58,22 +58,13 @@ function App() {
         <Route path="/Aboutus" element={<Aboutus />} />
         <Route path="/Cart" element={<Cart />} />
         <Route path="/Shop" element={<Shop />} />
-        {/* <Route path="/SingleProducts" element={<SingleProducts />} /> */}
         <Route path="/CheckOut" element={<Checkout/>}/>
         <Route path="/Contact" element={<Contact/>}/>
         <Route path="/Error" element={<Error/>}/>
-        {/* <Route path="/SinglePost" element={<SinglePost/>}/> */}
         <Route path="/Styles" element={<Styles/>}/>
         <Route path="/my-account" element={<MyAccount/>}/>
         <Route path="/thank-you" element={<ThankYou/>}/>
         <Route path="/create-product" element={<CreateProduct/>}/>
-        
-
-
-
-
-
-
       </Routes>
     </BrowserRouter>
   );
