@@ -1,34 +1,33 @@
 const jwt = require("jsonwebtoken");
-const dotenv = require('dotenv').config()
-const User = require("../model/userModel")
 
-const protectRoute = async (req, res, next) => {
-  let token;
-  let authHeader = req.headers.Authorization || req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer")) {
-    token = authHeader.split(" ")[1];
-    // Encoded
-    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
-      if (decoded) {
-        let result = await User.findOne({ _id: decoded.userId });
-        req.user = result;
-        next();
-      } else {
-        console.log("err", err);
-        next();
-      }
-    });
-    if (!token) {
-      res.status({
-        status: false,
-        msg: "token missing",
+const protectRoute = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        success: false,
+        message: "Access denied. Token missing.",
       });
-      throw new Error("User is not authorized or token is missing");
     }
-  } else {
-    res.status({
-      status: false,
-      msg: "something wrong in token",
+    
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Token missing.",
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.log("JWT ERROR:", error.message);
+
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token.",
     });
   }
 };

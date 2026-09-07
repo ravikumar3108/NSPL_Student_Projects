@@ -1,24 +1,27 @@
-const Cart = require("../model/cartModel")
-const Product = require("../model/productModel")
+const Cart = require("../model/cartModel");
+const Product = require("../model/productModel");
 
-const addToCart = async(req,res)=>{
-    console.log(req.body)
-    console.log(req.user._id)
-    try {
-        
+const addToCart = async (req, res) => {
+  console.log(req.body._id);
+  console.log("user", req.user);
+  try {
+    const cartdata = new Cart({
+      item: req.body._id,
+      user: req.user.userId,
+    });
 
-        const cartdata = new Cart({
-            item:req.body._id,
-            user:req.user._id
-        })
+    const saveData = await cartdata.save();
+    res.json({ message: saveData });
+  } catch (error) {
+    res.json({ error: error });
+  }
+};
 
-        const saveData = await cartdata.save()
-        res.json({message:saveData})
+const getCartsData = async (req, res) => {
+  const userId = req.user.userId;
+  console.log(userId)
+  const userCartData = await Cart.find({ user: userId }).populate("item");
+  res.json({ data: userCartData });
+};
 
-    } catch (error) {
-         res.json({error:error})
-    }   
-
-}
-
-module.exports = {addToCart}
+module.exports = { addToCart, getCartsData };
