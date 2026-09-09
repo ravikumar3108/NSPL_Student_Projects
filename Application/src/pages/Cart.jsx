@@ -1,48 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Trash2, Minus, Plus, ArrowLeft, ShoppingBag, Layout as LayoutIcon } from "lucide-react";
 import Layout from "../Layout/Layout";
+import api from "../api/Api";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Fresh Organic Apples",
-      category: "Fresh Fruits",
-      price: 180,
-      quantity: 1,
-      image:
-        "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500",
-    },
-    {
-      id: 2,
-      name: "Organic Green Broccoli",
-      category: "Vegetables",
-      price: 120,
-      quantity: 2,
-      image:
-        "https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=500",
-    },
-    {
-      id: 3,
-      name: "Organic Honey",
-      category: "Natural Products",
-      price: 350,
-      quantity: 1,
-      image:
-        "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500",
-    },
-  ]);
-
-  
+  const [cartItems, setCartItems] = useState([]);
+  console.log("stateData", cartItems)
+  // console.log(cartItems[0]?.item?.title)
 
 
+  const getCartData = async () => {
+    const res = await api.post("/carts/getCart")
+    // console.log(res.data.data)
+    setCartItems(res.data.data)
+  }
 
 
-
-
-
-
+  useEffect(() => {
+    getCartData()
+  }, [])
 
 
   const increaseQuantity = (id) => {
@@ -152,9 +129,9 @@ const Cart = () => {
                     {/* Products */}
                     <div className="divide-y divide-gray-100 rounded-2xl bg-white shadow-sm">
 
-                      {cartItems.map((item) => (
+                      {cartItems && cartItems.map((item) => (
                         <div
-                          key={item.id}
+                          key={item._id}
                           className="p-5 sm:p-6"
                         >
                           <div className="flex flex-col gap-5 md:grid md:grid-cols-[1fr_120px_130px_40px] md:items-center md:gap-4">
@@ -163,22 +140,22 @@ const Cart = () => {
                             <div className="flex items-center gap-4">
 
                               <img
-                                src={item.image}
-                                alt={item.name}
+                                // src={item?.image}
+                                alt={item?.item?.title}
                                 className="h-24 w-24 shrink-0 rounded-xl object-cover sm:h-28 sm:w-28"
                               />
 
                               <div>
                                 <p className="mb-1 text-xs font-medium uppercase tracking-wide text-green-600">
-                                  {item.category}
+                                  {item?.item?.category}
                                 </p>
 
                                 <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                                  {item.name}
+                                  {item?.item?.title}
                                 </h3>
 
                                 <p className="mt-2 text-sm text-gray-500 md:hidden">
-                                  ₹{item.price}
+                                  ₹{item?.item?.price}
                                 </p>
                               </div>
 
@@ -187,7 +164,7 @@ const Cart = () => {
                             {/* Price */}
                             <div className="hidden md:block">
                               <p className="text-sm font-semibold text-gray-900">
-                                ₹{item.price}
+                                ₹{item?.item?.price}
                               </p>
                             </div>
 
@@ -210,12 +187,12 @@ const Cart = () => {
                                 </button>
 
                                 <span className="flex h-9 w-9 items-center justify-center border-x border-gray-200 text-sm font-medium">
-                                  {item.quantity}
+                                  {item?.quantity}
                                 </span>
 
                                 <button
                                   onClick={() =>
-                                    increaseQuantity(item.id)
+                                    increaseQuantity(item._id)
                                   }
                                   className="flex h-9 w-9 items-center justify-center text-gray-500 transition hover:bg-gray-50"
                                 >
