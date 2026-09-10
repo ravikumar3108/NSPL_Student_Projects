@@ -23,13 +23,17 @@ const Cart = () => {
 
 
   const increaseQuantity = (id) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
+    // setCartItems((items) =>
+    //   items.map((item) =>
+    //     item.id === id
+    //       ? { ...item, quantity: item.quantity + 1 }
+    //       : item
+    //   )
+    // );
+
+    // Upadte res True.....
+    // getCartData()
+
   };
 
   const decreaseQuantity = (id) => {
@@ -164,7 +168,7 @@ const Cart = () => {
                             {/* Price */}
                             <div className="hidden md:block">
                               <p className="text-sm font-semibold text-gray-900">
-                                ₹{item?.item?.price}
+                                ₹{item?.item?.price * item?.quantity}
                               </p>
                             </div>
 
