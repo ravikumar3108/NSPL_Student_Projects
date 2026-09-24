@@ -7,75 +7,7 @@ import axios from "axios";
 function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  const handlePayment = async (amount) => {
-    console.log(amount)
-    try {
-      // 1. Backend se Razorpay order create karo
-      const { data } = await axios.post(
-        "http://localhost:5000/api/payment/create-order",
-        {
-          amount,
-        }
-      );
-
-      const order = data.order;
-      console.log(order)
-
-      // 2. Razorpay checkout options
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency,
-        name: "My Store",
-        description: "Order Payment",
-        order_id: order.id,
-
-        handler: async function (response) {
-          try {
-            // 3. Backend par payment verify karo
-            const verifyResponse = await axios.post(
-              "http://localhost:5000/api/payment/verify",
-              {
-                paymentId: response.razorpay_payment_id,
-              }
-            );
-
-            if (verifyResponse.data.success) {
-              alert("Payment Successful 🎉");
-
-              console.log("Payment ID:", response.razorpay_payment_id);
-            }
-          } catch (error) {
-            console.log(error);
-            alert("Payment verification failed");
-          }
-        },
-
-        prefill: {
-          name: "Ravi Kumar",
-          email: "ravi@example.com",
-          contact: "9876543210",
-        },
-
-        theme: {
-          color: "#3399cc",
-        },
-      };
-
-      // 4. Razorpay checkout open
-      const razorpay = new window.Razorpay(options);
-
-      razorpay.on("payment.failed", function (response) {
-        console.log(response.error);
-        alert("Payment Failed");
-      });
-
-      razorpay.open();
-    } catch (error) {
-      console.log(error);
-      alert("Unable to create payment order");
-    }
-  };
+ 
 
 
   return (

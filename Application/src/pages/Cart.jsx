@@ -3,18 +3,87 @@ import { Link } from "react-router-dom";
 import { Trash2, Minus, Plus, ArrowLeft, ShoppingBag, Layout as LayoutIcon } from "lucide-react";
 import Layout from "../Layout/Layout";
 import api from "../api/Api";
+import axios from "axios";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   console.log("stateData", cartItems)
-  // console.log(cartItems[0]?.item?.title)
-
 
   const getCartData = async () => {
     const res = await api.post("/carts/getCart")
     // console.log(res.data.data)
     setCartItems(res.data.data)
   }
+
+  const handlePayment = async (amount) => {
+    try {
+      // 1. Backend se Razorpay order create karo
+      const { data } = await axios.post(
+        "http://localhost:5000/api/payment/create-order",
+        {
+          amount,
+        }
+      );
+
+      const order = data.order;
+      console.log(order)
+
+      // 2. Razorpay checkout options
+      const options = {
+        key: "rzp_test_TdrX4K3nBlKz5p",
+        amount: order.amount,
+        currency: order.currency,
+        name: "My Store",
+        description: "Order Payment",
+        order_id: order._id,
+
+        handler: async function (response) {
+          try {
+            // 3. Backend par payment verify karo
+            const verifyResponse = await axios.post(
+              "http://localhost:5000/api/payment/verify",
+              {
+                paymentId: response.razorpay_payment_id,
+              }
+            );
+
+            if (verifyResponse.data.success) {
+              alert("Payment Successful 🎉");
+
+              console.log("Payment ID:", response.razorpay_payment_id);
+            }
+          } catch (error) {
+            console.log(error);
+            alert("Payment verification failed");
+          }
+        },
+
+        prefill: {
+          name: "Ravi Kumar",
+          email: "ravi@example.com",
+          contact: "9876543210",
+        },
+
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      // 4. Razorpay checkout open
+      const razorpay = new window.Razorpay(options);
+
+      razorpay.on("payment.failed", function (response) {
+        console.log(response.error);
+        alert("Payment Failed");
+      });
+
+      razorpay.open();
+    } catch (error) {
+      console.log(error);
+      alert("Unable to create payment order");
+    }
+  };
+
 
 
   useEffect(() => {
@@ -51,7 +120,7 @@ const Cart = () => {
   };
 
   const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + item.item.price * item.quantity,
     0
   );
 
@@ -299,12 +368,12 @@ const Cart = () => {
                     </div>
 
                     {/* Checkout */}
-                    <Link
-                      to="/Checkout"
+                    <button
+                      onClick={() => handlePayment(total)}
                       className="mt-7 flex w-full items-center justify-center rounded-full bg-green-600 px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-green-700"
                     >
                       Proceed to Checkout
-                    </Link>
+                    </button>
 
                     <p className="mt-4 text-center text-xs leading-5 text-gray-400">
                       Secure checkout · Free shipping on orders above ₹500
