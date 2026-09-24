@@ -6,28 +6,26 @@ const razorpay = new Razorpay({
 });
 
 const createOrder = async (req, res) => {
+  
+  try {
+    const options = {
+      amount: 50000, // ₹500 → amount in paise
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
 
-    console.log(req.body)
+    const order = await razorpay.orders.create(options);
 
-//   try {
-//     const options = {
-//       amount: 50000, // ₹500 → amount in paise
-//       currency: "INR",
-//       receipt: `receipt_${Date.now()}`,
-//     };
-
-//     const order = await razorpay.orders.create(options);
-
-//     res.status(200).json({
-//       success: true,
-//       order,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
+    res.status(200).json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 
