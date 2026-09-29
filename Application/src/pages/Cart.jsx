@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Trash2, Minus, Plus, ArrowLeft, ShoppingBag, Layout as LayoutIcon } from "lucide-react";
+import {
+  Trash2,
+  Minus,
+  Plus,
+  ArrowLeft,
+  ShoppingBag,
+  Layout as LayoutIcon,
+} from "lucide-react";
 import Layout from "../Layout/Layout";
 import api from "../api/Api";
 import axios from "axios";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-  console.log("stateData", cartItems)
+  console.log("stateData", cartItems);
 
   const getCartData = async () => {
-    const res = await api.post("/carts/getCart")
+    const res = await api.post("/carts/getCart");
     // console.log(res.data.data)
-    setCartItems(res.data.data)
-  }
+    setCartItems(res.data.data);
+  };
 
   const handlePayment = async (amount) => {
     try {
@@ -22,11 +29,11 @@ const Cart = () => {
         "http://localhost:5000/api/payment/create-order",
         {
           amount,
-        }
+        },
       );
 
       const order = data.order;
-      console.log(order)
+      console.log(order);
 
       // 2. Razorpay checkout options
       const options = {
@@ -35,7 +42,7 @@ const Cart = () => {
         currency: order.currency,
         name: "My Store",
         description: "Order Payment",
-        order_id: order._id,
+        order_id: order.id,
 
         handler: async function (response) {
           try {
@@ -43,8 +50,12 @@ const Cart = () => {
             const verifyResponse = await axios.post(
               "http://localhost:5000/api/payment/verify",
               {
+                razorpay_order_id: response.razorpay_order_id,
+
                 paymentId: response.razorpay_payment_id,
-              }
+
+                razorpay_signature: response.razorpay_signature,
+              },
             );
 
             if (verifyResponse.data.success) {
@@ -84,12 +95,9 @@ const Cart = () => {
     }
   };
 
-
-
   useEffect(() => {
-    getCartData()
-  }, [])
-
+    getCartData();
+  }, []);
 
   const increaseQuantity = (id) => {
     // setCartItems((items) =>
@@ -99,10 +107,8 @@ const Cart = () => {
     //       : item
     //   )
     // );
-
     // Upadte res True.....
     // getCartData()
-
   };
 
   const decreaseQuantity = (id) => {
@@ -110,8 +116,8 @@ const Cart = () => {
       items.map((item) =>
         item.id === id && item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -121,7 +127,7 @@ const Cart = () => {
 
   const subtotal = cartItems.reduce(
     (total, item) => total + item.item.price * item.quantity,
-    0
+    0,
   );
 
   const shipping = subtotal >= 500 || subtotal === 0 ? 0 : 50;
@@ -132,11 +138,9 @@ const Cart = () => {
     <>
       <Layout>
         <div className="min-h-screen bg-[#fafcf8]">
-
           {/* ================= HERO ================= */}
           <section className="bg-[#eef5e8] px-4 py-14 sm:py-16">
             <div className="mx-auto max-w-7xl">
-
               <p className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-green-600">
                 Shopping Cart
               </p>
@@ -149,18 +153,15 @@ const Cart = () => {
                 Review your selected products and continue to checkout when
                 you're ready.
               </p>
-
             </div>
           </section>
 
           {/* ================= CART ================= */}
           <section className="px-4 py-10 sm:py-14">
             <div className="mx-auto max-w-7xl">
-
               {cartItems.length === 0 ? (
                 /* ================= EMPTY CART ================= */
                 <div className="flex min-h-[450px] flex-col items-center justify-center rounded-2xl bg-white px-6 text-center shadow-sm">
-
                   <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-[#eef5e8]">
                     <ShoppingBag
                       size={34}
@@ -183,14 +184,11 @@ const Cart = () => {
                   >
                     Continue Shopping
                   </Link>
-
                 </div>
               ) : (
                 <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-
                   {/* ================= LEFT ================= */}
                   <div>
-
                     {/* Table Header */}
                     <div className="hidden border-b border-gray-200 pb-4 text-xs font-semibold uppercase tracking-wider text-gray-500 md:grid md:grid-cols-[1fr_120px_130px_40px] md:gap-4">
                       <span>Product</span>
@@ -201,106 +199,89 @@ const Cart = () => {
 
                     {/* Products */}
                     <div className="divide-y divide-gray-100 rounded-2xl bg-white shadow-sm">
+                      {cartItems &&
+                        cartItems.map((item) => (
+                          <div key={item._id} className="p-5 sm:p-6">
+                            <div className="flex flex-col gap-5 md:grid md:grid-cols-[1fr_120px_130px_40px] md:items-center md:gap-4">
+                              {/* Product */}
+                              <div className="flex items-center gap-4">
+                                <img
+                                  // src={item?.image}
+                                  alt={item?.item?.title}
+                                  className="h-24 w-24 shrink-0 rounded-xl object-cover sm:h-28 sm:w-28"
+                                />
 
-                      {cartItems && cartItems.map((item) => (
-                        <div
-                          key={item._id}
-                          className="p-5 sm:p-6"
-                        >
-                          <div className="flex flex-col gap-5 md:grid md:grid-cols-[1fr_120px_130px_40px] md:items-center md:gap-4">
+                                <div>
+                                  <p className="mb-1 text-xs font-medium uppercase tracking-wide text-green-600">
+                                    {item?.item?.category}
+                                  </p>
 
-                            {/* Product */}
-                            <div className="flex items-center gap-4">
+                                  <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
+                                    {item?.item?.title}
+                                  </h3>
 
-                              <img
-                                // src={item?.image}
-                                alt={item?.item?.title}
-                                className="h-24 w-24 shrink-0 rounded-xl object-cover sm:h-28 sm:w-28"
-                              />
+                                  <p className="mt-2 text-sm text-gray-500 md:hidden">
+                                    ₹{item?.item?.price}
+                                  </p>
+                                </div>
+                              </div>
 
-                              <div>
-                                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-green-600">
-                                  {item?.item?.category}
-                                </p>
-
-                                <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                                  {item?.item?.title}
-                                </h3>
-
-                                <p className="mt-2 text-sm text-gray-500 md:hidden">
-                                  ₹{item?.item?.price}
+                              {/* Price */}
+                              <div className="hidden md:block">
+                                <p className="text-sm font-semibold text-gray-900">
+                                  ₹{item?.item?.price * item?.quantity}
                                 </p>
                               </div>
 
-                            </div>
-
-                            {/* Price */}
-                            <div className="hidden md:block">
-                              <p className="text-sm font-semibold text-gray-900">
-                                ₹{item?.item?.price * item?.quantity}
-                              </p>
-                            </div>
-
-                            {/* Quantity */}
-                            <div className="flex items-center justify-between md:justify-start">
-
-                              <span className="text-sm text-gray-500 md:hidden">
-                                Quantity
-                              </span>
-
-                              <div className="flex items-center rounded-lg border border-gray-200">
-
-                                <button
-                                  onClick={() =>
-                                    decreaseQuantity(item.id)
-                                  }
-                                  className="flex h-9 w-9 items-center justify-center text-gray-500 transition hover:bg-gray-50"
-                                >
-                                  <Minus size={15} />
-                                </button>
-
-                                <span className="flex h-9 w-9 items-center justify-center border-x border-gray-200 text-sm font-medium">
-                                  {item?.quantity}
+                              {/* Quantity */}
+                              <div className="flex items-center justify-between md:justify-start">
+                                <span className="text-sm text-gray-500 md:hidden">
+                                  Quantity
                                 </span>
 
-                                <button
-                                  onClick={() =>
-                                    increaseQuantity(item._id)
-                                  }
-                                  className="flex h-9 w-9 items-center justify-center text-gray-500 transition hover:bg-gray-50"
-                                >
-                                  <Plus size={15} />
-                                </button>
+                                <div className="flex items-center rounded-lg border border-gray-200">
+                                  <button
+                                    onClick={() => decreaseQuantity(item.id)}
+                                    className="flex h-9 w-9 items-center justify-center text-gray-500 transition hover:bg-gray-50"
+                                  >
+                                    <Minus size={15} />
+                                  </button>
 
+                                  <span className="flex h-9 w-9 items-center justify-center border-x border-gray-200 text-sm font-medium">
+                                    {item?.quantity}
+                                  </span>
+
+                                  <button
+                                    onClick={() => increaseQuantity(item._id)}
+                                    className="flex h-9 w-9 items-center justify-center text-gray-500 transition hover:bg-gray-50"
+                                  >
+                                    <Plus size={15} />
+                                  </button>
+                                </div>
                               </div>
 
+                              {/* Remove */}
+                              <button
+                                onClick={() => removeItem(item.id)}
+                                className="hidden text-gray-400 transition hover:text-red-500 md:block"
+                                aria-label={`Remove ${item.name}`}
+                              >
+                                <Trash2 size={18} />
+                              </button>
                             </div>
 
-                            {/* Remove */}
-                            <button
-                              onClick={() => removeItem(item.id)}
-                              className="hidden text-gray-400 transition hover:text-red-500 md:block"
-                              aria-label={`Remove ${item.name}`}
-                            >
-                              <Trash2 size={18} />
-                            </button>
-
+                            {/* Mobile Remove */}
+                            <div className="mt-4 flex justify-end md:hidden">
+                              <button
+                                onClick={() => removeItem(item.id)}
+                                className="flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-red-500"
+                              >
+                                <Trash2 size={15} />
+                                Remove
+                              </button>
+                            </div>
                           </div>
-
-                          {/* Mobile Remove */}
-                          <div className="mt-4 flex justify-end md:hidden">
-                            <button
-                              onClick={() => removeItem(item.id)}
-                              className="flex items-center gap-2 text-xs font-medium text-gray-400 hover:text-red-500"
-                            >
-                              <Trash2 size={15} />
-                              Remove
-                            </button>
-                          </div>
-
-                        </div>
-                      ))}
-
+                        ))}
                     </div>
 
                     {/* Continue Shopping */}
@@ -313,12 +294,10 @@ const Cart = () => {
                         Continue Shopping
                       </Link>
                     </div>
-
                   </div>
 
                   {/* ================= RIGHT SUMMARY ================= */}
                   <aside className="h-fit rounded-2xl bg-white p-6 shadow-sm sm:p-7">
-
                     <h2 className="text-xl font-semibold text-gray-900">
                       Cart Summary
                     </h2>
@@ -327,9 +306,7 @@ const Cart = () => {
 
                     {/* Subtotal */}
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">
-                        Subtotal
-                      </span>
+                      <span className="text-gray-500">Subtotal</span>
 
                       <span className="font-semibold text-gray-900">
                         ₹{subtotal}
@@ -338,9 +315,7 @@ const Cart = () => {
 
                     {/* Shipping */}
                     <div className="mt-4 flex items-center justify-between text-sm">
-                      <span className="text-gray-500">
-                        Shipping
-                      </span>
+                      <span className="text-gray-500">Shipping</span>
 
                       <span className="font-semibold text-gray-900">
                         {shipping === 0 ? "FREE" : `₹${shipping}`}
@@ -378,12 +353,9 @@ const Cart = () => {
                     <p className="mt-4 text-center text-xs leading-5 text-gray-400">
                       Secure checkout · Free shipping on orders above ₹500
                     </p>
-
                   </aside>
-
                 </div>
               )}
-
             </div>
           </section>
         </div>
