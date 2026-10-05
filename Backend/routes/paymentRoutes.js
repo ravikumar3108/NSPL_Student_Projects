@@ -5,8 +5,11 @@ const {verifyPayment ,createOrder,clearCart} = require("../controller/paymentCon
 
 
 
-router.post("/create-order",createOrder)
-router.post("/verify",verifyPayment)
+router.post("/create-order",createOrder);
+router.post("/verify",verifyPayment);
 router.post("/clearCart", clearCart);
+
+
+
 
 module.exports = router;

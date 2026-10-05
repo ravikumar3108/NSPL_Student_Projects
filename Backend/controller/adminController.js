@@ -1,9 +1,10 @@
-const Admin = require("../model/adminModel")
-const jwt = require("jsonwebtoken")
+const Admin = require("../model/adminModel");
+const jwt = require("jsonwebtoken");
 
 const adminLogin = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    // console.log(req.body);
+    const { email, password } = req.body;
     const admin = await Admin.findOne({ email });
     if (!admin) {
       return res.status(404).json({
@@ -19,14 +20,15 @@ const adminLogin = async (req, res) => {
       });
     }
 
-    let token = await jwt.sign({
-      userId : admin._id
-    },
-    process.env.JWT_SECRET_KEY,
-    {
-      expiresIn:"7D"
-    }
-  )
+    let token = await jwt.sign(
+      {
+        userId: admin._id,
+      },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: "7D",
+      },
+    );
 
     res.status(200).json({
       success: true,
@@ -40,14 +42,13 @@ const adminLogin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
       success: false,
       message: error,
     });
   }
 };
-
 
 //regiserAdmin
 
@@ -63,7 +64,7 @@ const registerAdmin = async (req, res) => {
     }
 
     const existingAdmin = await Admin.findOne({ email });
-    console.log(existingAdmin)
+    // console.log(existingAdmin)
     if (existingAdmin) {
       return res.status(200).json({
         success: false,
@@ -91,7 +92,7 @@ const registerAdmin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -110,26 +111,23 @@ const singleAdmin = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Admin not Found",
-
       });
     }
     return res.status(200).json({
       success: true,
       message: "Admin fetched successfully",
       admin,
-    })
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
 //Get All Admin
 
 const getAllAdmin = async (req, res) => {
-
   try {
     const admin = await Admin.find();
     res.status(200).json({
@@ -137,18 +135,29 @@ const getAllAdmin = async (req, res) => {
       message: "admin fetched succesfully",
       data: admin,
     });
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).json({
       status: false,
       message: error.message,
-    })
-
+    });
   }
+};
 
-}
+const profile = async (req, res) => {
+  // console.log(req.user)
+  try {
+    const profile = await Admin.findById(req.user.userId);
+    // console.log(profile);
+    res.json({ data: profile, success: true });
+  } catch (err) {
+    res.json({ error: err });
+  }
+};
 
-
-
-
-module.exports = { adminLogin, registerAdmin, singleAdmin, getAllAdmin };
+module.exports = {
+  adminLogin,
+  registerAdmin,
+  singleAdmin,
+  getAllAdmin,
+  profile,
+};
