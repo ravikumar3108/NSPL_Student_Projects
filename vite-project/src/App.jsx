@@ -17,6 +17,16 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Signup />}
+        />
+
         <Route element={<Layout />}>
           {/* Main page */}
           <Route
@@ -24,48 +34,17 @@ function App() {
             element={<Dashboard />}
           />
 
-          {/* Future pages */}
           <Route
-            path="/analytics"
-            element={<Login />}
-          />
-
-          <Route
-            path="/finance"
-            element={<Signup />}
-          />
-
-          <Route
-            path="/data"
+            path="/profile"
             element={<Profile />}
           />
-
-          <Route
-            path="/charts"
-            element={<Placeholder />}
-          />
-
-          <Route
-            path="/courses"
-            element={<Placeholder />}
-          />
-
-          <Route
-            path="/members"
-            element={<Placeholder />}
-          />
-
-          <Route
-            path="/settings"
-            element={<Placeholder />}
-          />
-
           {/* Default */}
           <Route
             path="/"
             element={<Navigate to="/dashboard" replace />}
           />
         </Route>
+
       </Routes>
     </BrowserRouter>
   );

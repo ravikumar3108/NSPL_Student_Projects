@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -8,6 +10,10 @@ const Login = () => {
     password: "",
   });
 
+  console.log("login", formData)
+
+  const nav = useNavigate()
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -15,12 +21,23 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Login Data:", formData);
+    const res = await axios.post("http://localhost:5000/api/admin/login", formData)
+    console.log(res)
 
-    // API call yaha kar sakte ho
+    if (res.data.success) {
+      alert(res.data.message || "Login Sucess")
+      localStorage.setItem("adminorganic", res.data.token)
+      setTimeout(() => {
+        nav("/dashboard")
+      }, 2000);
+    }
+    else {
+      // alert(res.data.error)
+    }
+
   };
 
   return (

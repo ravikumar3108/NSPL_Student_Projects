@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     User,
     Mail,
@@ -12,17 +12,12 @@ import {
     ShieldCheck,
     Package,
 } from "lucide-react";
+import api from "../../Api/Api";
 
 const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
 
-    const [user, setUser] = useState({
-        name: "Ravi Kumar",
-        email: "ravi@example.com",
-        phone: "+91 98765 43210",
-        address: "Jaipur, Rajasthan, India",
-        joined: "September 2026",
-    });
+    const [user, setUser] = useState(null);
 
     const [formData, setFormData] = useState(user);
 
@@ -59,6 +54,19 @@ const Profile = () => {
         window.location.href = "/login";
     };
 
+
+    const handleFetchProfile = async () => {
+        const res = await api.get("/admin/profile")
+        // console.log(res)
+        setUser(res.data.data)
+        localStorage.setItem("adminorganicUser", JSON.stringify(res.data.data))
+    }
+    useEffect(() => {
+        handleFetchProfile()
+    }, [])
+
+
+
     return (
         <div className="min-h-screen bg-slate-100 px-4 py-8 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-5xl">
@@ -93,11 +101,11 @@ const Profile = () => {
 
                                 <div className="pb-1">
                                     <h2 className="text-xl font-bold text-slate-900">
-                                        {user.name}
+                                        {user?.name}
                                     </h2>
 
                                     <p className="text-sm text-slate-500">
-                                        {user.email}
+                                        {user?.email}
                                     </p>
                                 </div>
                             </div>
@@ -177,7 +185,7 @@ const Profile = () => {
                                             <input
                                                 type="email"
                                                 name="email"
-                                                value={formData.email}
+                                                value={formData?.email}
                                                 onChange={handleChange}
                                                 className="w-full rounded-xl border border-slate-300 py-3 pl-10 pr-4 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10"
                                             />
@@ -199,7 +207,7 @@ const Profile = () => {
                                             <input
                                                 type="text"
                                                 name="phone"
-                                                value={formData.phone}
+                                                value={formData?.phone}
                                                 onChange={handleChange}
                                                 className="w-full rounded-xl border border-slate-300 py-3 pl-10 pr-4 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10"
                                             />
@@ -221,7 +229,7 @@ const Profile = () => {
                                             <input
                                                 type="text"
                                                 name="address"
-                                                value={formData.address}
+                                                value={formData?.address}
                                                 onChange={handleChange}
                                                 className="w-full rounded-xl border border-slate-300 py-3 pl-10 pr-4 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10"
                                             />
@@ -263,7 +271,7 @@ const Profile = () => {
                                             </p>
 
                                             <p className="mt-1 text-sm font-semibold text-slate-800">
-                                                {user.name}
+                                                {user?.name}
                                             </p>
                                         </div>
                                     </div>
@@ -278,7 +286,7 @@ const Profile = () => {
                                             </p>
 
                                             <p className="mt-1 break-all text-sm font-semibold text-slate-800">
-                                                {user.email}
+                                                {user?.email}
                                             </p>
                                         </div>
                                     </div>
@@ -293,7 +301,7 @@ const Profile = () => {
                                             </p>
 
                                             <p className="mt-1 text-sm font-semibold text-slate-800">
-                                                {user.phone}
+                                                {user?.phone}
                                             </p>
                                         </div>
                                     </div>
@@ -308,7 +316,7 @@ const Profile = () => {
                                             </p>
 
                                             <p className="mt-1 text-sm font-semibold text-slate-800">
-                                                {user.address}
+                                                {user?.address}
                                             </p>
                                         </div>
                                     </div>
@@ -344,7 +352,7 @@ const Profile = () => {
                                         </p>
 
                                         <p className="text-sm font-semibold text-slate-800">
-                                            {user.joined}
+                                            {user?.joined}
                                         </p>
                                     </div>
                                 </div>

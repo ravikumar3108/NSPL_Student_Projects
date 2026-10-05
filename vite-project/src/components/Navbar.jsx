@@ -6,8 +6,18 @@ import {
     Bell,
     ChevronDown,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 function Navbar({ setSidebarOpen }) {
+
+    const [user, setUser] = useState()
+
+    useEffect((
+    ) => {
+        const user = JSON.parse(localStorage.getItem(""))
+        setUser(user)
+    })
+
     return (
         <header className="sticky top-0 z-30 h-[82px] border-b border-slate-200 bg-white/95 backdrop-blur">
             <div className="flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
