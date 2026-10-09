@@ -19,39 +19,24 @@ const navigation = [
         icon: LayoutDashboard,
     },
     {
-        name: "Analytics",
-        path: "/analytics",
+        name: "Products",
+        path: "/products",
         icon: BarChart3,
     },
     {
-        name: "Finance",
-        path: "/finance",
+        name: "Users",
+        path: "/users",
         icon: Wallet,
     },
     {
-        name: "Data",
-        path: "/data",
+        name: "Create Admin",
+        path: "/create-admin",
         icon: Database,
     },
     {
-        name: "Charts",
-        path: "/charts",
+        name: "Create Product",
+        path: "/create-products",
         icon: PieChart,
-    },
-    {
-        name: "Courses",
-        path: "/courses",
-        icon: GraduationCap,
-    },
-    {
-        name: "Members",
-        path: "/members",
-        icon: Users,
-    },
-    {
-        name: "Settings",
-        path: "/settings",
-        icon: Settings,
     },
 ];
 
@@ -168,32 +153,6 @@ function Sidebar({ open, setOpen }) {
                         })}
                     </div>
                 </nav>
-
-                {/* =========================
-                    Bottom Plan Card
-                ========================= */}
-                <div className="shrink-0 border-t border-slate-100 p-4">
-                    <div className="rounded-xl bg-slate-50 p-4">
-                        <div className="flex items-center justify-between">
-                            <p className="text-xs text-slate-400">
-                                Current plan
-                            </p>
-
-                            <span className="text-[10px] font-semibold text-blue-500">
-                                72%
-                            </span>
-                        </div>
-
-                        <p className="mt-1 text-sm font-semibold text-slate-800">
-                            Professional
-                        </p>
-
-                        {/* Progress */}
-                        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-200">
-                            <div className="h-full w-[72%] rounded-full bg-blue-500 transition-all duration-500" />
-                        </div>
-                    </div>
-                </div>
             </aside>
         </>
     );

@@ -12,6 +12,8 @@ import Placeholder from "./pages/Placeholder";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 import Profile from "./pages/Auth/Profile";
+import CreateProduct from "./pages/CreateProduct";
+import Products from "./pages/Products";
 
 function App() {
   return (
@@ -37,6 +39,14 @@ function App() {
           <Route
             path="/profile"
             element={<Profile />}
+          />
+          <Route
+            path="/create-products"
+            element={<CreateProduct />}
+          />
+          <Route
+            path="/products"
+            element={<Products />}
           />
           {/* Default */}
           <Route
