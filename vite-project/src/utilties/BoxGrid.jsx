@@ -3,41 +3,41 @@ import {
     Plus,
 } from "lucide-react";
 
-function BoxGrid() {
+function BoxGrid({ data }) {
+    console.log(data)
     return (
         <>
             <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800">
-                        Products
+                        {data?.pagename}
                     </h1>
                     <p className="mt-1 text-sm text-slate-500">
-                        Manage your products and inventory.
+                        {data?.description}
                     </p>
                 </div>
 
-                <button
-                    // onClick={handleAdd}
+                {data?.pagename == "Products" ? <button
                     className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
                 >
                     <Plus size={18} />
-                    Add Product
-                </button>
+                    {data?.buttonname}
+                </button> : ""}
             </div>
 
             {/* Statistics */}
             <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <StatCard title="Total Products"
+                <StatCard title={data?.box1}
                 // value={products?.length} 
                 />
 
                 <StatCard
-                    title="In Stock"
+                    title={data?.box2}
                 // value={products.filter((p) => p.stock > 0).length}
                 />
 
                 <StatCard
-                    title="Out of Stock"
+                    title={data?.box3}
                 // value={products.filter((p) => p.stock === 0).length}
                 />
             </div>

@@ -14,6 +14,7 @@ import Signup from "./pages/Auth/Signup";
 import Profile from "./pages/Auth/Profile";
 import CreateProduct from "./pages/CreateProduct";
 import Products from "./pages/Products";
+import Users from "./pages/Users";
 
 function App() {
   return (
@@ -47,6 +48,10 @@ function App() {
           <Route
             path="/products"
             element={<Products />}
+          />
+          <Route
+            path="/users"
+            element={<Users />}
           />
           {/* Default */}
           <Route
